@@ -1,0 +1,6 @@
+
+<%= transform_to_select2 'invoice', min_input_length: 1,
+                                    url: auto_complete_invoices_path(project_id: @project.try(:id)) %>
+
+<%= transform_to_select2 'expense', min_input_length: 1,
+                                    url: auto_complete_expenses_path(project_id: @project.try(:id)) %>

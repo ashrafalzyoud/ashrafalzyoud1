@@ -1,0 +1,10 @@
+<hr/>
+<div id="related-issues">
+  <p><strong><%=l(:label_crm_related_issues)%></strong></p>
+  <% issues.each do |issue| %>
+    <p class="icon icon-issue">
+      <%= link_to "#{issue.tracker} ##{issue.id}:", issue_path(issue) %>
+      <%= issue.subject %>
+    </p>
+  <% end %>
+</div>

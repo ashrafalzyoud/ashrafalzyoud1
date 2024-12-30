@@ -1,0 +1,7 @@
+<h2><%=l(:label_invoice_template)%></h2>
+
+<%= labelled_form_for :invoice_template, @invoice_template, :url => { :action => 'update', :project_id => @project }, :html => { :id => 'invoice_templates_form'} do |f| %>
+<%= render :partial => 'invoice_templates/form', :locals => { :f => f } %>
+<%= submit_tag l(:button_save) %>
+<%= link_to l(:button_apply), "#", :style => "margin-left:10px;", :remote => true, :onclick => "$.ajax({url: '#{escape_javascript invoice_template_path(@invoice_template)}', type: \'post\', data: $(\'#invoice_templates_form\').serialize() + '&format=js'}); $('textarea').removeData('changed'); return false;"%>
+<% end %>

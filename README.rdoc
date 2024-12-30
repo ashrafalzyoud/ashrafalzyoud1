@@ -1,0 +1,54 @@
+= contacts_invoices
+
+== Test
+rake db:drop  RAILS_ENV=test_sqlite3
+rake db:migrate db:migrate_plugins RAILS_ENV=test_sqlite3
+rake test:plugins:integration PLUGIN=redmine_contacts_invoices RAILS_ENV=test_sqlite3
+rake test:plugins:functionals PLUGIN=redmine_contacts_invoices RAILS_ENV=test_sqlite3
+rake test:plugins PLUGIN=redmine_contacts_invoices RAILS_ENV=test_sqlite3
+
+rake db:reset  db:migrate_plugins test:plugins NAME=redmine_contacts_invoices RAILS_ENV=test
+
+rake db:drop RAILS_ENV=test && rake db:migrate db:migrate_plugins RAILS_ENV=test && rake test:plugins PLUGIN=redmine_contacts_invoices RAILS_ENV=test
+
+== Test API
+
+curl -v -H "Content-Type: application/xml" -X POST --data "@invoice.xml" -u admin:admin http://localhost:3000/invoices.xml
+
+== API
+
+=== Invoice Payments
+
+API request #index
+GET /invoices/<invoices_id>/invoice_payments.json?key=your_secret_api_key
+
+API request #create
+POST /invoices/<invoices_id>/invoice_payments.json?key=your_secret_api_key
+  {
+    "invoice_payment":
+      {
+        "amount": 200,
+        "payment_date": "2024-08-03",
+        "description": "payment description",
+        "account_id": 1,
+        "category_id": 2
+    }
+}
+
+API request #destroy
+DELETE /invoices/<invoices_id>/invoice_payments/<payment_id>.json?key=your_secret_api_key
+
+=== Invoice comments
+
+API request invoice with comments
+GET /invoices/<invoices_id>.json?include=comments
+
+API request #create
+POST /invoice_comments.json?
+  {
+    id: invoice.id,
+    comment: {comments: "API comment"}
+  }
+
+API request #destroy
+DELETE /invoice_comments/<invoice_id>.json?id=<comment_id>

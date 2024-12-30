@@ -1,0 +1,7 @@
+api.comment do
+  api.id @comment.id
+  api.text @comment.content
+  api.author(:id => @comment.author_id, :name => @comment.author.name) unless @comment.author.nil?
+  api.created_on @comment.created_on
+  api.updated_on @comment.updated_on
+end

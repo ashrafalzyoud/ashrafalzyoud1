@@ -1,0 +1,15 @@
+<div id="invoice_comments" style="margin-bottom:16px;">
+  <% if @comments.any? %>
+      <% @comments.each do |comment| %>
+        <div class="invoice-comment">
+          <% next if comment.new_record? %>
+          <div class="contextual">
+            <%= link_to_if_authorized image_tag('delete.png'), {:controller => 'invoice_comments', :action => 'destroy', :id => @invoice, :comment_id => comment},
+                                      :data => {:confirm => l(:text_are_you_sure)}, :method => :delete, :title => l(:button_delete) %>
+          </div>
+          <h4><%= avatar(comment.author, :size => "24") %><%= authoring comment.created_on, comment.author %></h4>
+          <%= textilizable(comment.comments) %>
+        </div>
+      <% end %>
+  <% end %>
+</div>

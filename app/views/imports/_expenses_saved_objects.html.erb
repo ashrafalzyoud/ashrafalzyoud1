@@ -1,0 +1,24 @@
+<table id="saved-items" class="list">
+  <thead>
+  <tr>
+    <th>#</th>
+    <th><%= t(:field_expense_date) %></th>
+    <th><%= t(:filed_description) %></th>
+    <th><%= t(:field_expense_contact) %></th>
+    <th><%= t(:field_expense_status) %></th>
+    <th><%= l(:field_expense_price) %></th>
+  </tr>
+  </thead>
+  <tbody>
+  <% saved_objects.each do |expense| %>
+  <tr>
+    <td id="expense-<%= expense.id %>"><%= link_to expense.id, expense_path(expense) %></td>
+    <td><%= format_date(expense.expense_date) %></td>
+    <td><%= expense.description %></td>
+    <td><%= expense.contact %></td>
+    <td><%= expense.status %></td>
+    <td><%= expense.price %></td>
+  </tr>
+  <% end %>
+  </tbody>
+</table>

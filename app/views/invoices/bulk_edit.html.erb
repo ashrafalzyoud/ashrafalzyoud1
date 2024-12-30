@@ -1,0 +1,76 @@
+<h2><%= l(:label_invoice_bulk_edit_selected_invoices) %></h2>
+
+
+<div class="box" id="duplicates">
+  <ul>
+    <% @invoices.each do |invoice| %>
+    <li>
+      <%= link_to "#{invoice.number}#{' - ' + invoice.subject unless invoice.subject.blank?}", {:controller => :invoices, :action => :show, :id => invoice.id} %>:
+      <%= contact_tag(invoice.contact, :size => 16) if invoice.contact %>
+      (<%= invoice.amount_to_s %>)
+      <%= invoice_status_tag(invoice) %>
+    </li>
+    <% end %>
+  </ul>
+</div>
+
+
+<%= form_tag(:action => 'bulk_update') do %>
+  <%= @invoices.collect {|i| hidden_field_tag('ids[]', i.id)}.join.html_safe %>
+  <div class="box tabular">
+  <fieldset class="attributes">
+    <legend><%= l(:label_change_properties) %></legend>
+
+    <div class="splitcontent">
+      <div class="splitcontentleft">
+        <p>
+          <label><%= l(:field_project) %></label>
+          <%= select_tag 'invoice[project_id]', content_tag('option', l(:label_no_change_option), value: '') + project_tree_options_for_select(Invoice.allowed_target_projects) %>
+        </p>
+        <% if @available_statuses.any? %>
+        <p>
+          <label><%= l(:field_status) %></label>
+          <%= select_tag('invoice[status_id]', content_tag('option', l(:label_no_change_option), :value => '') +
+                            options_for_select(@available_statuses)) %>
+        </p>
+        <% end %>
+        <p class="object-select">
+          <%= label_tag :invoice_contact_id,  l(:field_invoice_contact)%>
+          <%= select_contact_tag('invoice[contact_id]', '', is_select: Contact.visible.by_project(ContactsSetting.cross_project_contacts? ? nil : @project).count < 50, is_company: RedmineInvoices.settings['invoices_select_companies'], include_blank: true) %>
+        </p>
+      </div>
+      <div class="splitcontentright">
+        <p>
+          <label><%= l(:field_assigned_to) %></label>
+          <%= select_tag('invoice[assigned_to_id]', content_tag('option', l(:label_no_change_option), :value => '') +
+                                         content_tag('option', l(:label_nobody), :value => 'none') +
+                                         options_from_collection_for_select(@assignables, :id, :name)) %>
+        </p>
+        <p>
+          <label><%= l(:field_invoice_currency) %></label>
+          <%= select_tag 'invoice[currency]', options_for_select(@available_currencies) %>
+        </p>
+
+        <% if InvoicesSettings.per_invoice_templates? && InvoiceTemplate.in_project_and_global(@project).any? %>
+        <p>
+          <label><%= l(:label_invoice_template) %></label>
+          <%= select_tag 'invoice[template_id]', options_for_select(invoice_custom_templates_options_for_select) %>
+        </p>
+        <% end %>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend><%= l(:field_notes) %></legend>
+    <%= text_area_tag 'note[content]', '', :cols => 60, :rows => 10, :class => 'wiki-edit' %>
+    <%= wikitoolbar_for 'note_content' %>
+  </fieldset>
+</div>
+
+<p><%= submit_tag l(:button_submit) %></p>
+<% end %>
+
+<% content_for :header_tags do %>
+  <%= javascript_include_tag :contacts, :plugin => 'redmine_contacts'  %>
+<% end %>
