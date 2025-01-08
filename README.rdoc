@@ -1,4 +1,4 @@
-= contacts_invoices
+ sssss= contacts_invoices
 
 == Test
 rake db:drop  RAILS_ENV=test_sqlite3
